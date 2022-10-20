@@ -22,3 +22,21 @@ function query($query)
 
   return $rows;
 }
+
+function create($data)
+{
+  $conn = conn();
+  $nama = htmlspecialchars($data["nama"]);
+  $npm = htmlspecialchars($data["npm"]);
+  $jurusan = htmlspecialchars($data["jurusan"]);
+  $email = htmlspecialchars($data["email"]);
+  $gambar = htmlspecialchars($data["gambar"]);
+
+  $query = "INSERT INTO datamhs
+            VALUES
+            (null, '$nama', '$npm', '$jurusan', '$email', '$gambar')
+            ";
+  mysqli_query($conn, $query);
+  echo mysqli_error($conn);
+  return mysqli_affected_rows($conn);
+}
