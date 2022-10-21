@@ -7,7 +7,7 @@ if (isset($_POST["submit"])) {
     echo "
       <script>
         alert('Data Berhasil Ditambah');
-        document.location.href = 'latihan3.php';
+        document.location.href = 'index.php';
       </script>
     ";
   } else {

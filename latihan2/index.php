@@ -2,6 +2,10 @@
 require 'functions.php';
 $mahasiswa = query("SELECT * FROM datamhs");
 
+//ketika tombol cari ditekan
+if (isset($_POST["search"])) {
+  $mahasiswa = search($_POST["keyword"]);
+}
 ?>
 
 <!DOCTYPE html>
@@ -20,6 +24,12 @@ $mahasiswa = query("SELECT * FROM datamhs");
   <a href="create.php">Tambah Mahasiswa</a>
   <br><br>
 
+  <form action="" method="post">
+    <input type="text" name="keyword" size="40" autofocus autocomplete="off" placeholder="Cari disini...">
+    <button type="submit" name="search">Cari!</button>
+  </form>
+  <br>
+
   <table border="1" cellpadding="10" cellspacing="0">
     <tr>
       <th>#</th>
@@ -28,6 +38,14 @@ $mahasiswa = query("SELECT * FROM datamhs");
       <th>Gambar</th>
       <th>Aksi</th>
     </tr>
+
+    <?php if (empty($mahasiswa)) : ?>
+      <tr>
+        <td colspan="5">
+          <p style="color: red; font-style: italic;">Data Mahasiswa Tidak Ditemukan</p>
+        </td>
+      </tr>
+    <?php endif; ?>
 
     <?php $i = 1; ?>
     <?php foreach ($mahasiswa as $mhs) : ?>

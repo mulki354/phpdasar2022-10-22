@@ -25,10 +25,10 @@ $mhs = query("SELECT * FROM datamhs WHERE id = $id");
     <li>Email : <?= $mhs["email"]; ?></li>
     <li>Jurusan : <?= $mhs["jurusan"]; ?></li>
     <li>
-      <a href="">Update</a> | <a href="">Delete</a>
+      <a href="update.php?id=<?= $mhs["id"]; ?>">Update</a> | <a href="delete.php?id=<?= $mhs["id"]; ?>&gambar=<?= $mhs["gambar"]; ?>" onclick="return alert('Yakin Dihapus?')">Delete</a>
     </li>
     <li>
-      <a href="latihan3.php">Kembali</a>
+      <a href="index.php">Kembali</a>
     </li>
   </ul>
 </body>
