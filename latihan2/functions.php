@@ -23,6 +23,65 @@ function query($query)
   return $rows;
 }
 
+function upload()
+{
+  $nama_file = $_FILES["gambar"]["name"];
+  $tipe_file = $_FILES["gambar"]["type"];
+  $ukuran_file = $_FILES["gambar"]["size"];
+  $error = $_FILES["gambar"]["error"];
+  $tmp_file = $_FILES["gambar"]["tmp_name"];
+
+  // ketika tidak ada gambar yang dipilih
+  if ($error == 4) {
+    // echo "
+    //   <script>
+    //     alert('Pilih Gambar Terlebih Dahulu');
+    //   </script>
+    // ";
+    return 'nophoto-laki.jpg';
+  }
+
+  // cek ekstensi file
+  $daftar_gambar = ["jpg", "jpeg", "png"];
+  $ekstensi_file = explode(".", $nama_file);
+  $ekstensi_file = strtolower(end($ekstensi_file));
+
+  if (!in_array($ekstensi_file, $daftar_gambar)) {
+    echo "
+      <script>
+        alert('Hanya Bisa Upload JPG, JPEG, PNG');
+      </script>
+    ";
+    return false;
+  }
+
+  // cek type file
+  if ($tipe_file != 'image/jpeg' && $tipe_file != 'image/png') {
+    echo "
+      <script>
+        alert('Hanya Bisa Upload JPG, JPEG, PNG');
+      </script>
+    ";
+    return false;
+  }
+
+  // cek ukuran file maksimal 2mb
+  if ($ukuran_file > 2000000) {
+    echo "
+      <script>
+        alert('Ukuran terlalu besar');
+      </script>
+    ";
+    return false;
+  }
+
+  //generate nama file baru
+  $nama_file_baru = date("YmdHis") . "-" . uniqid() . "." . $ekstensi_file;
+  // lolos pengecekan siap upload
+  move_uploaded_file($tmp_file, "img/" . $nama_file_baru);
+  return $nama_file_baru;
+}
+
 function create($data)
 {
   $conn = conn();
@@ -30,7 +89,13 @@ function create($data)
   $npm = htmlspecialchars($data["npm"]);
   $jurusan = htmlspecialchars($data["jurusan"]);
   $email = htmlspecialchars($data["email"]);
-  $gambar = htmlspecialchars($data["gambar"]);
+  // $gambar = htmlspecialchars($data["gambar"]);
+
+  //upload gambar
+  $gambar = upload();
+  if (!$gambar) {
+    return false;
+  }
 
   $query = "INSERT INTO datamhs
             VALUES
@@ -40,11 +105,14 @@ function create($data)
   return mysqli_affected_rows($conn);
 }
 
-function delete($id, $gambar)
+function delete($id)
 {
   $conn = conn();
+  $mhs = query("SELECT * FROM datamhs WHERE id = $id");
+  if ($mhs["gambar"] != "nophoto-laki.jpg") {
+    unlink("img/" . $mhs["gambar"]);
+  }
   mysqli_query($conn, "DELETE FROM datamhs WHERE id = $id") or die(mysqli_error($conn));
-  unlink("img/" . $gambar);
   return mysqli_affected_rows($conn);
 }
 
@@ -56,7 +124,21 @@ function update($data)
   $npm = htmlspecialchars($data["npm"]);
   $jurusan = htmlspecialchars($data["jurusan"]);
   $email = htmlspecialchars($data["email"]);
-  $gambar = htmlspecialchars($data["gambar"]);
+  $gambarLama = htmlspecialchars($data["gambarLama"]);
+  $error = $_FILES["gambar"]["error"];
+  // cek upload gambar
+  if ($error === 4) {
+    $gambar = $gambarLama;
+  } else {
+    $gambar = upload();
+    if (!$gambar) {
+      return false;
+    }
+    if ($gambarLama != "nophoto-laki.jpg") {
+      unlink("img/" . $gambarLama);
+    }
+  }
+
 
   $query = "UPDATE datamhs SET
             nama = '$nama',

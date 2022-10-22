@@ -12,9 +12,8 @@ if (!isset($_GET["id"])) {
 }
 //mengambil id dari url
 $id = $_GET["id"];
-$gambar = $_GET["gambar"];
 
-if (delete($id, $gambar) > 0) {
+if (delete($id) > 0) {
   echo "
     <script>
       alert('Data Berhasil Dihapus');

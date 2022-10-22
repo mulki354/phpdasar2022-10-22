@@ -10,8 +10,8 @@ require 'functions.php';
 if (isset($_POST["submit"])) {
   if (create($_POST) > 0) {
     echo "
-      <script>
-        alert('Data Berhasil Ditambah');
+    <script>
+    alert('Data Berhasil Ditambah');
         document.location.href = 'index.php';
       </script>
     ";
@@ -37,7 +37,7 @@ if (isset($_POST["submit"])) {
 <body>
   <h3>Form Tambah Data Mahasiswa</h3>
 
-  <form action="" method="post">
+  <form action="" method="post" enctype="multipart/form-data">
     <ul>
       <li>
         <label>
@@ -66,14 +66,17 @@ if (isset($_POST["submit"])) {
       <li>
         <label>
           Gambar :
-          <input type="text" name="gambar" required>
+          <input type="file" name="gambar" class="gambar" onchange="previewImage()">
         </label>
+        <img src="img/nophoto-laki.jpg" width="75" style="display: block;" class="img-preview">
       </li>
       <li>
         <button type="submit" name="submit">Tambah Data!</button>
       </li>
     </ul>
   </form>
+
+  <script src="js/script.js"></script>
 </body>
 
 </html>
